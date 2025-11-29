@@ -26,7 +26,7 @@ export default function Home() {
    */
   const handleFileAccepted = async (file: File) => {
     setOriginalFile(file);
-    
+
     try {
       // Start upload phase
       dispatch({ type: 'START_UPLOAD' });
@@ -95,20 +95,20 @@ export default function Home() {
     if (processingState.status === 'complete') {
       URL.revokeObjectURL(processingState.result.previewUrl);
     }
-    
+
     setOriginalFile(null);
     dispatch({ type: 'RESET' });
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 p-4 sm:p-8">
+    <main className="min-h-screen bg-black p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
             Document Redaction Tool
           </h1>
-          <p className="text-gray-600 text-sm sm:text-base">
+          <p className="text-gray-300 text-sm sm:text-base">
             Automatically detect and redact sensitive information from your documents
           </p>
         </div>
@@ -118,20 +118,20 @@ export default function Home() {
           {/* Upload Section - Show when idle or error */}
           {(processingState.status === 'idle' ||
             processingState.status === 'error') && (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <UploadComponent
-                onFileAccepted={handleFileAccepted}
-                onFileRejected={handleFileRejected}
-              />
-              
-              {/* Error Display */}
-              {processingState.status === 'error' && (
-                <div className="mt-6">
-                  <ErrorDisplay error={processingState.error} />
-                </div>
-              )}
-            </div>
-          )}
+              <div className="bg-black rounded-lg shadow-md p-6">
+                <UploadComponent
+                  onFileAccepted={handleFileAccepted}
+                  onFileRejected={handleFileRejected}
+                />
+
+                {/* Error Display */}
+                {processingState.status === 'error' && (
+                  <div className="mt-6">
+                    <ErrorDisplay error={processingState.error} />
+                  </div>
+                )}
+              </div>
+            )}
 
           {/* Processing Section - Show during processing */}
           <ProgressIndicator processingState={processingState} />
@@ -153,10 +153,13 @@ export default function Home() {
         </div>
 
         {/* Footer Info */}
-        <div className="mt-8 text-center text-xs text-gray-500">
-          <p>
+        <div className="mt-8 text-center space-y-2">
+          <p className="text-xs text-gray-400">
             Your documents are processed locally in your browser. No data is
             sent to any server.
+          </p>
+          <p className="text-sm text-gray-400 font-medium">
+            Made by Akshay
           </p>
         </div>
       </div>

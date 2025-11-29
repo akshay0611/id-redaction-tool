@@ -101,36 +101,36 @@ export default function PreviewComponent({
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Detection Summary */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">Detection Summary</h2>
+      <div className="bg-black rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold mb-4 text-white">Detection Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="text-center p-4 bg-blue-950/30 rounded-lg border border-blue-900/50">
+            <div className="text-2xl font-bold text-blue-400">
               {detectionCount.aadhaar}
             </div>
-            <div className="text-sm text-gray-600">Aadhaar Numbers</div>
+            <div className="text-sm text-gray-400">Aadhaar Numbers</div>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="text-center p-4 bg-green-950/30 rounded-lg border border-green-900/50">
+            <div className="text-2xl font-bold text-green-400">
               {detectionCount.pan}
             </div>
-            <div className="text-sm text-gray-600">PAN Numbers</div>
+            <div className="text-sm text-gray-400">PAN Numbers</div>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">
+          <div className="text-center p-4 bg-purple-950/30 rounded-lg border border-purple-900/50">
+            <div className="text-2xl font-bold text-purple-400">
               {detectionCount.phone}
             </div>
-            <div className="text-sm text-gray-600">Phone Numbers</div>
+            <div className="text-sm text-gray-400">Phone Numbers</div>
           </div>
-          <div className="text-center p-4 bg-orange-50 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">
+          <div className="text-center p-4 bg-orange-950/30 rounded-lg border border-orange-900/50">
+            <div className="text-2xl font-bold text-orange-400">
               {detectionCount.address}
             </div>
-            <div className="text-sm text-gray-600">Addresses</div>
+            <div className="text-sm text-gray-400">Addresses</div>
           </div>
         </div>
         <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-400">
             Total: <span className="font-semibold">{totalDetections}</span>{' '}
             sensitive item{totalDetections !== 1 ? 's' : ''} redacted
           </p>
@@ -138,8 +138,8 @@ export default function PreviewComponent({
       </div>
 
       {/* Document Preview */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">Redacted Document Preview</h2>
+      <div className="bg-black rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold mb-4 text-white">Redacted Document Preview</h2>
 
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -147,11 +147,11 @@ export default function PreviewComponent({
           </div>
         )}
 
-        <div className="flex justify-center items-center bg-gray-100 rounded-lg p-4 min-h-[400px]">
+        <div className="flex justify-center items-center bg-zinc-950 rounded-lg p-4 min-h-[400px]">
           {isLoading && (
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading preview...</p>
+              <p className="mt-4 text-gray-400">Loading preview...</p>
             </div>
           )}
 
@@ -182,16 +182,15 @@ export default function PreviewComponent({
               disabled={currentPage === 1}
               className={`
                 px-4 py-2 rounded-lg font-medium transition-colors
-                ${
-                  currentPage === 1
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                ${currentPage === 1
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
                 }
               `}
             >
               Previous
             </button>
-            <span className="text-gray-700">
+            <span className="text-gray-300">
               Page {currentPage} of {totalPages}
             </span>
             <button
@@ -199,10 +198,9 @@ export default function PreviewComponent({
               disabled={currentPage === totalPages}
               className={`
                 px-4 py-2 rounded-lg font-medium transition-colors
-                ${
-                  currentPage === totalPages
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                ${currentPage === totalPages
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
                 }
               `}
             >

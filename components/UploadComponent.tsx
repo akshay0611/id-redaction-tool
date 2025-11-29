@@ -63,18 +63,17 @@ export default function UploadComponent({
         className={`
           border-2 border-dashed rounded-lg p-12 text-center cursor-pointer
           transition-colors duration-200 ease-in-out
-          ${
-            isDragActive
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50'
+          ${isDragActive
+            ? 'border-blue-500 bg-blue-950/30'
+            : 'border-gray-700 bg-black hover:border-gray-600 hover:bg-zinc-950'
           }
         `}
       >
         <input {...getInputProps()} />
-        
+
         <div className="flex flex-col items-center space-y-4">
           <svg
-            className={`w-16 h-16 ${isDragActive ? 'text-blue-500' : 'text-gray-400'}`}
+            className={`w-16 h-16 ${isDragActive ? 'text-blue-500' : 'text-gray-500'}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -89,19 +88,19 @@ export default function UploadComponent({
           </svg>
 
           {isDragActive ? (
-            <p className="text-lg font-medium text-blue-600">
+            <p className="text-lg font-medium text-blue-400">
               Drop your document here
             </p>
           ) : (
             <>
-              <p className="text-lg font-medium text-gray-700">
+              <p className="text-lg font-medium text-gray-200">
                 Drag and drop your document here
               </p>
-              <p className="text-sm text-gray-500">or click to browse</p>
+              <p className="text-sm text-gray-400">or click to browse</p>
             </>
           )}
 
-          <div className="text-xs text-gray-400 space-y-1">
+          <div className="text-xs text-gray-500 space-y-1">
             <p>Supported formats: PNG, JPG, JPEG, PDF</p>
             <p>Maximum file size: 10MB</p>
           </div>

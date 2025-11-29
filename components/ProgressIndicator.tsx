@@ -86,7 +86,7 @@ export default function ProgressIndicator({
   const pageProgress = getPageProgress();
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-8">
+    <div className="bg-black rounded-lg shadow-md p-8">
       <div className="text-center space-y-6">
         {/* Spinner */}
         <div className="flex justify-center">
@@ -95,14 +95,14 @@ export default function ProgressIndicator({
 
         {/* Status Text */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-white mb-2">
             {stageInfo.title}
           </h2>
-          <p className="text-gray-600 text-sm">{stageInfo.description}</p>
+          <p className="text-gray-300 text-sm">{stageInfo.description}</p>
         </div>
 
         {/* Stage Progress */}
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-400">
           Step {stageInfo.step} of {stageInfo.totalSteps}
         </div>
 
@@ -111,13 +111,13 @@ export default function ProgressIndicator({
           {/* Upload Progress Bar (specific to upload stage) */}
           {processingState.status === 'uploading' && (
             <>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-800 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${processingState.progress}%` }}
                 ></div>
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-400">
                 {processingState.progress}% uploaded
               </div>
             </>
@@ -126,13 +126,13 @@ export default function ProgressIndicator({
           {/* Page Progress Bar (for multi-page PDFs) */}
           {pageProgress !== null && (
             <>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-800 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${pageProgress}%` }}
                 ></div>
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-400">
                 {Math.round(pageProgress)}% of current stage
               </div>
             </>
@@ -141,13 +141,13 @@ export default function ProgressIndicator({
           {/* Overall Progress Bar (for other stages without page progress) */}
           {processingState.status !== 'uploading' && pageProgress === null && (
             <>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-800 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${overallProgress}%` }}
                 ></div>
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-400">
                 {Math.round(overallProgress)}% complete
               </div>
             </>
@@ -159,21 +159,20 @@ export default function ProgressIndicator({
           {[1, 2, 3, 4].map((step) => (
             <div
               key={step}
-              className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                step < stageInfo.step
+              className={`w-2 h-2 rounded-full transition-colors duration-300 ${step < stageInfo.step
                   ? 'bg-green-500'
                   : step === stageInfo.step
-                  ? 'bg-blue-600'
-                  : 'bg-gray-300'
-              }`}
+                    ? 'bg-blue-600'
+                    : 'bg-gray-700'
+                }`}
               title={
                 step === 1
                   ? 'Upload'
                   : step === 2
-                  ? 'Extract'
-                  : step === 3
-                  ? 'Detect'
-                  : 'Redact'
+                    ? 'Extract'
+                    : step === 3
+                      ? 'Detect'
+                      : 'Redact'
               }
             />
           ))}
