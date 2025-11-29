@@ -201,6 +201,10 @@ export class PatternDetector {
       // Look for patterns that might be PAN with common OCR mistakes
       const fuzzyPANs = this.findFuzzyPANMatches(fullText, page.textBlocks, page.pageNumber);
       detections.push(...fuzzyPANs);
+
+      // Third pass: very aggressive matching for edge cases (watermarks, noise, etc.)
+      const aggressivePANs = this.findAggressivePANMatches(fullText, page.textBlocks, page.pageNumber);
+      detections.push(...aggressivePANs);
     }
 
     // Remove duplicates
@@ -211,7 +215,10 @@ export class PatternDetector {
    * Normalize PAN text by fixing common OCR errors
    */
   private normalizePAN(text: string): string {
-    let normalized = text.toUpperCase();
+    let normalized = text.toUpperCase().trim();
+
+    // Remove common noise characters
+    normalized = normalized.replace(/[^A-Z0-9]/g, '');
 
     // Common OCR mistakes in PAN numbers:
     // O (letter) vs 0 (zero) - in digit positions should be 0
@@ -230,7 +237,9 @@ export class PatternDetector {
         .replace(/I/g, '1')
         .replace(/Z/g, '2')
         .replace(/S/g, '5')
-        .replace(/B/g, '8');
+        .replace(/B/g, '8')
+        .replace(/G/g, '6')
+        .replace(/T/g, '7');
 
       normalized = part1 + fixedDigits + part3;
     }
@@ -291,6 +300,64 @@ export class PatternDetector {
           }
         }
       }
+    }
+
+    return detections;
+  }
+
+  /**
+   * Very aggressive PAN matching for edge cases like watermarks, noise, etc.
+   * This method splits text and checks individual words more carefully
+   */
+  private findAggressivePANMatches(
+    fullText: string,
+    textBlocks: TextBlock[],
+    pageNumber: number
+  ): Detection[] {
+    const detections: Detection[] = [];
+
+    // Split text into individual words and check each
+    const words = fullText.split(/\s+/);
+    let currentIndex = 0;
+
+    for (const word of words) {
+      // Clean the word of special characters
+      const cleaned = word.replace(/[^A-Za-z0-9]/g, '');
+
+      // Check if it could be a PAN (10 characters)
+      if (cleaned.length >= 10 && cleaned.length <= 12) {
+        // Try to extract 10-character substring
+        for (let i = 0; i <= cleaned.length - 10; i++) {
+          const candidate = cleaned.substring(i, i + 10);
+          const normalized = this.normalizePAN(candidate);
+
+          if (this.isValidPANFormat(normalized)) {
+            // Find this word in the full text
+            const wordIndex = fullText.indexOf(word, currentIndex);
+            if (wordIndex !== -1) {
+              const bbox = this.findBoundingBoxForMatch(
+                word,
+                wordIndex,
+                textBlocks,
+                fullText
+              );
+
+              if (bbox) {
+                detections.push({
+                  type: 'PAN',
+                  value: normalized,
+                  confidence: 0.65, // Even lower confidence for aggressive matches
+                  bbox,
+                  pageNumber,
+                });
+              }
+            }
+            break; // Found a match in this word, move to next word
+          }
+        }
+      }
+
+      currentIndex += word.length + 1; // +1 for space
     }
 
     return detections;
