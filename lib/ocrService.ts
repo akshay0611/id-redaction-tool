@@ -24,25 +24,25 @@ function getUserFriendlyErrorMessage(error: unknown): string {
   if (error instanceof OCRError) {
     return error.userMessage;
   }
-  
+
   const errorMessage = error instanceof Error ? error.message.toLowerCase() : '';
-  
+
   if (errorMessage.includes('worker') || errorMessage.includes('initialize')) {
     return 'Unable to initialize text extraction. Please refresh the page and try again.';
   }
-  
+
   if (errorMessage.includes('load') || errorMessage.includes('decode')) {
     return 'Unable to extract text from document. Please ensure the image is clear and try again.';
   }
-  
+
   if (errorMessage.includes('pdf')) {
     return 'Error processing PDF. Please ensure the file is not corrupted and try again.';
   }
-  
+
   if (errorMessage.includes('canvas') || errorMessage.includes('render')) {
     return 'Error processing page. Please try again.';
   }
-  
+
   return 'Unable to extract text from document. Please ensure the image is clear and try again.';
 }
 
@@ -60,6 +60,13 @@ export class OCRService {
 
     try {
       this.worker = await createWorker('eng');
+
+      // Configure Tesseract for better accuracy on documents
+      await this.worker.setParameters({
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,/-:()[]', // Common document characters
+        preserve_interword_spaces: '1', // Better spacing detection
+      });
+
       this.isInitialized = true;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -119,10 +126,10 @@ export class OCRService {
     }
 
     let imageUrl: string | null = null;
-    
+
     try {
       imageUrl = URL.createObjectURL(file);
-      
+
       // Get image dimensions
       const img = await this.loadImage(imageUrl);
       const width = img.width;
@@ -133,7 +140,7 @@ export class OCRService {
 
       // Extract text blocks with bounding boxes
       const textBlocks: TextBlock[] = [];
-      
+
       if (result.data.words) {
         for (const word of result.data.words) {
           if (word.text.trim()) {
@@ -196,7 +203,7 @@ export class OCRService {
       // Process each page
       for (let pageNum = 1; pageNum <= numPages; pageNum++) {
         let imageUrl: string | null = null;
-        
+
         try {
           const page = await pdf.getPage(pageNum);
           const viewport = page.getViewport({ scale: 2.0 }); // Higher scale for better OCR
@@ -204,7 +211,7 @@ export class OCRService {
           // Create canvas to render PDF page
           const canvas = document.createElement('canvas');
           const context = canvas.getContext('2d');
-          
+
           if (!context) {
             throw new OCRError(
               'Failed to get canvas context',
@@ -239,7 +246,7 @@ export class OCRService {
 
           // Extract text blocks with bounding boxes
           const textBlocks: TextBlock[] = [];
-          
+
           if (result.data.words) {
             for (const word of result.data.words) {
               if (word.text.trim()) {
@@ -266,7 +273,7 @@ export class OCRService {
         } catch (error) {
           // Log page-specific error but continue processing other pages
           console.error(`Error processing page ${pageNum}:`, error);
-          
+
           // If it's the first page or a critical error, rethrow
           if (pageNum === 1 || error instanceof OCRError) {
             throw error;
@@ -295,7 +302,7 @@ export class OCRService {
       if (error instanceof OCRError) {
         throw error;
       }
-      
+
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new OCRError(
         `PDF OCR failed: ${message}`,
